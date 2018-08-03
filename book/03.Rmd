@@ -6,7 +6,7 @@ According to the Unix philosophy, text is a universal interface. Almost every co
 
 Data can be obtained in several ways---for example by downloading it from a server, by querying a database, or by connecting to a Web API. Sometimes, the data comes in a compressed form or in a binary format such as Microsoft Excel. In this chapter, we discuss several tools that help tackle this from the command line, including: `curl` [@curl], `in2csv` [@in2csv], `sql2csv` [@sql2csv], and `tar` [@tar].
 
-## Overview 
+## Overview
 
 In this chapter, you’ll learn how to:
 
@@ -20,7 +20,7 @@ In this chapter, you’ll learn how to:
 
 A common situation is that you already have the necessary files on your own computer. This section explains how you can get those files onto the local or remote version of the Data Science Toolbox.
 
-### Local Version of Data Science Toolbox 
+### Local Version of Data Science Toolbox
 
 We mentioned in [Chapter 2](#chapter-2-getting-started) that the Vagrant version of the Data Science Toolbox is an isolated virtual environment. Luckily there is one exception to that: files can be transfered in and out the Data Science Toolbox. The local directory from which you ran `vagrant up` (which is the one that contains the file *Vagrantfile*), is mapped to a directory in the Data Science Toolbox. This directory is called */vagrant*. Please note that this is not your home directory. Let us check the contents of this directory:
 
@@ -53,7 +53,7 @@ $ cd ~/book/ch03
 $ cat data/logs.csv
 ```
 
-### Remote Version of Data Science Toolbox 
+### Remote Version of Data Science Toolbox
 
 If you are running Linux or macOS, you can use `scp` [@scp], which stands for *secure copy*, to copy files onto the EC2 instance. You will need the same key pair file that you used to login to the EC2 instance.
 
@@ -64,7 +64,7 @@ $ scp -i  mykey.pem ~/Desktop/logs.csv \
 
 Replace the host name in the example *ec2-184-73-72-150.compute-1.amazonaws.com* with the value you see on the EC2 overview page in the AWS console.
 
-## Decompressing Files 
+## Decompressing Files
 
 If the original data set is very large or it's a collection of many files, the file may be a (compressed) archive. Data sets which contain many repeated values (such as the words in a text file or the keys in a JSON file) are especially well suited for compression.
 
@@ -323,47 +323,75 @@ The first line indicates the HTTP status code, which is 301 (moved permanently) 
 
 To conclude this section, cURL is a straight-forward command-line tool for downloading data from the Internet. Its three most common command-line arguments are `-s` to suppress the progress meter, `-u` to specify a username and password, and `-L` to automatically follow redirects. See its man page for more information.
 
-## Calling a Web API 
+## Calling a Web API
 
 In the previous section we explained how to download individual files from the Internet. Another way data can come from the Internet is through a web API, which stands for *Application Programming Interface*. The number of APIs that are being offered by organizations is growing at increasing rate, which means a lot of interesting data for us data scientists.
 
 Web APIs are not meant to be presented in nice layout, such as websites. Instead, most web APIs return data in a structured format, such as JSON or XML. Having data in a structured form has the advantage that the data can be easily processed by other tools, such as `jq`. For example, the API from <http://randomuser.me> returns data in the following JSON structure.
 
 ```{bash, eval=FALSE}
-$ curl -s http://api.randomuser.me | jq '.'
+$ curl -s https://api.randomuser.me | jq .
 {
   "results": [
     {
-      "version": "0.3.2",
-      "seed": "1c5b868416387bf",
-      "user": {
-        "picture": "http://api.randomuser.me/0.3.2/portraits/women/2.jpg",
-        "SSN": "972-79-4140",
-        "cell": "(519)-135-8132",
-        "phone": "(842)-322-2703",
-        "dob": "64945368",
-        "registered": "1136430654",
-        "sha1": "a3fed7d4f481fbd6845c0c5a19e4f1113cc977ed",
-        "gender": "female",
-        "name": {
-          "last": "green",
-          "first": "scarlett",
-          "title": "miss"
+      "gender": "male",
+      "name": {
+        "title": "mr",
+        "first": "jeffrey",
+        "last": "lawson"
+      },
+      "location": {
+        "street": "838 miller ave",
+        "city": "washington",
+        "state": "maryland",
+        "postcode": 81831,
+        "coordinates": {
+          "latitude": "81.9488",
+          "longitude": "-67.8247"
         },
-        "location": {
-          "zip": "43413",
-          "state": "nevada",
-          "city": "redding",
-          "street": "8608 crescent canyon st"
-        },
-        "email": "scarlett.green32@example.com",
-        "username": "reddog82",
-        "password": "ddddd",
-        "salt": "AEKvMi$+",
-        "md5": "f898fc73430cff8327b91ef6d538be5b"
-      }
+        "timezone": {
+          "offset": "+4:00",
+          "description": "Abu Dhabi, Muscat, Baku, Tbilisi"
+        }
+      },
+      "email": "jeffrey.lawson@example.com",
+      "login": {
+        "uuid": "78918f6c-2658-4915-bebf-bfaa61a1624c",
+        "username": "silverzebra774",
+        "password": "treble",
+        "salt": "iAtIKhvB",
+        "md5": "4c02abeca4d6ca4dbfc0ddb33dcef29f",
+        "sha1": "36e109513abf73df460cead89b78c749abe908fa",
+        "sha256": "0155d9e6cabedfc3ad0f21d18b3ca3e738a8f17811dd57dc3b4dd386cd021963"
+      },
+      "dob": {
+        "date": "1996-07-04T02:49:46Z",
+        "age": 22
+      },
+      "registered": {
+        "date": "2013-01-13T13:37:21Z",
+        "age": 5
+      },
+      "phone": "(406)-041-2792",
+      "cell": "(831)-085-8264",
+      "id": {
+        "name": "SSN",
+        "value": "629-40-9671"
+      },
+      "picture": {
+        "large": "https://randomuser.me/api/portraits/men/62.jpg",
+        "medium": "https://randomuser.me/api/portraits/med/men/62.jpg",
+        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/62.jpg"
+      },
+      "nat": "US"
     }
-  ]
+  ],
+  "info": {
+    "seed": "4bd9f66fd83a6ec7",
+    "results": 1,
+    "page": 1,
+    "version": "1.2"
+  }
 }
 ```
 
@@ -385,7 +413,7 @@ $ curlicue -f credentials \
 
 For more popular APIs, there are specialized command-line tools available. These are wrappers that provide a convenient way to connect to the API. In [Chapter 9](#chapter-9-modeling-data), for example, we’ll be using the command-line tool `bigmler` that only connects to BigML’s prediction API.
 
-## Further Reading 
+## Further Reading
 
 * Molinaro, Anthony. 2005. <em>SQL Cookbook</em>. O’Reilly Media.
 * Wikipedia. 2014. “List of Http Status Codes.” <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes" class="uri">http://en.wikipedia.org/wiki/List_of_HTTP_status_codes</a>.
